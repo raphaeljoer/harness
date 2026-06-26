@@ -1,0 +1,27 @@
+---
+description: Design estratégico de DDD (bounded contexts, context mapping, linguagem ubíqua). Aplique ao definir limites de contexto, integração entre módulos ou novos domínios.
+alwaysApply: false
+---
+
+# DDD — Design Estratégico
+
+## Bounded Contexts
+- Cada contexto tem seu próprio modelo e linguagem ubíqua; não compartilhe entidades entre contextos.
+- Um contexto = uma pasta em `src/contexts/<bounded-context>/`.
+- O mesmo termo pode significar coisas diferentes em contextos diferentes — isso é esperado.
+
+## Context Mapping (relações entre contextos)
+- **Shared Kernel**: pequeno núcleo compartilhado (`src/shared/`) — mantenha mínimo.
+- **Customer/Supplier** e **Conformist**: deixe explícito quem depende de quem.
+- **Anti-Corruption Layer (ACL)**: ao integrar com contexto/sistema externo, traduza o
+  modelo externo para o seu na borda (`infrastructure`), nunca deixe vazar para dentro.
+
+## Comunicação entre contextos
+- Prefira eventos de domínio / mensagens assíncronas a chamadas diretas acopladas.
+- Integração síncrona somente via ports bem definidos + ACL.
+
+## Como começar um novo contexto
+1. Defina a linguagem ubíqua (glossário curto) e as invariantes principais.
+2. Identifique os aggregates e seus limites de consistência.
+3. Use a skill `scaffold-bounded-context` para gerar a estrutura de pastas.
+4. Documente o relacionamento com contextos vizinhos (context map).

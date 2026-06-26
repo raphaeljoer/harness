@@ -1,0 +1,33 @@
+---
+description: Estratégia de testes e TDD
+globs: "**/*.{spec,test}.{ts,tsx}"
+alwaysApply: false
+---
+
+# Testes & TDD
+
+## Fluxo TDD (para domínio e use cases)
+1. Escreva um teste que falha descrevendo o comportamento esperado.
+2. Implemente o mínimo para passar.
+3. Refatore mantendo verde.
+
+## Pirâmide
+- **Domínio**: testes unitários puros, sem mocks de infra (o domínio não tem I/O).
+- **Use cases**: teste a orquestração usando *fakes/in-memory* dos ports.
+- **Infra**: testes de integração para repositórios/adapters reais.
+- **E2E**: poucos, cobrindo fluxos críticos ponta a ponta.
+
+## Boas práticas
+- Um comportamento por teste; nome descreve a regra de negócio.
+- Prefira *fakes* in-memory a mocks frágeis para repositórios.
+- Use *Object Mothers*/builders para montar agregados de teste.
+- Teste invariantes e casos de borda do domínio, não getters triviais.
+
+```typescript
+// application: use case com repositório in-memory
+it('recusa saque acima do saldo', async () => {
+  const repo = new InMemoryAccountRepository([accountWith({ balance: 100 })]);
+  const result = await new WithdrawUseCase(repo).execute({ accountId, amount: 150 });
+  expect(result.ok).toBe(false);
+});
+```

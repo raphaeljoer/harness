@@ -1,0 +1,50 @@
+---
+description: Princípios centrais de engenharia e fluxo de trabalho com IA para este repositório
+alwaysApply: true
+---
+
+# Princípios Centrais
+
+## Postura de engenharia
+- Prefira a solução mais simples que resolve o problema real (YAGNI). Não antecipe abstrações.
+- Otimize para leitura e mudança futura, não para esperteza.
+- Torne o código testável por design: dependências explícitas, efeitos colaterais na borda.
+- Erros são valores ou tipos, não strings cruas. Falhe alto e cedo no domínio.
+
+## Fluxo de trabalho com IA
+1. Identifique se a tarefa é **back-end** ou **front-end** (contexto, estrutura do pacote em `package/`).
+2. Antes de editar, leia os arquivos relevantes e entenda as fronteiras de camada.
+3. Para tarefas com 3+ passos, planeje em uma lista de tarefas antes de codar.
+4. Siga TDD: teste primeiro, depois implementação.
+5. Após mudanças, rode typecheck/lint/test e corrija o que quebrar.
+6. Não marque tarefa como concluída sem verificação real (`backend-verifier` ou `frontend-verifier`).
+
+Pacotes em `package/` são livres — a separação back-end/front-end existe apenas em skills, rules e agents.
+
+## Quando delegar — back-end
+
+| Tarefa | Subagente |
+| --- | --- |
+| Modelagem de domínio | `backend-domain-modeler` |
+| Implementação de camadas | `backend-implementer` |
+| Testes / TDD | `backend-test-runner` |
+| Violações de Clean Architecture | `backend-architecture-guard` |
+| Validação de entrega | `backend-verifier` |
+| Auth, dados sensíveis, pagamentos | `backend-security-reviewer` |
+
+## Quando delegar — front-end
+
+| Tarefa | Subagente |
+| --- | --- |
+| Modelagem de feature/UI | `frontend-feature-modeler` |
+| Implementação de componentes | `frontend-implementer` |
+| Testes de UI/hooks | `frontend-test-runner` |
+| Violações de arquitetura front-end | `frontend-architecture-guard` |
+| Validação de entrega | `frontend-verifier` |
+| Auth, tokens, dados na UI | `frontend-security-reviewer` |
+
+## O que NÃO fazer
+- Não vazar framework/ORM/HTTP para dentro de `domain` ou `application` (back-end).
+- Não colocar lógica de negócio ou fetch direto em componentes (front-end).
+- Não criar comentários que apenas narram o código.
+- Não introduzir `any` para "fazer compilar". Modele o tipo corretamente.

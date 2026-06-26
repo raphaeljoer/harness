@@ -1,0 +1,43 @@
+---
+description: Padrões táticos de DDD (aggregates, entidades, value objects, domain events, repositórios). Aplique ao modelar ou implementar o domínio.
+alwaysApply: false
+---
+
+# DDD — Padrões Táticos
+
+## Value Objects
+- Imutáveis; igualdade por valor; validam invariantes na criação.
+- Sem identidade própria. Ex.: `Email`, `Money`, `CPF`.
+
+```typescript
+export class Email {
+  private constructor(public readonly value: string) {}
+  static create(raw: string): Result<Email, InvalidEmailError> {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw)) return err(new InvalidEmailError(raw));
+    return ok(new Email(raw.toLowerCase()));
+  }
+}
+```
+
+## Entidades & Aggregates
+- Entidade tem identidade estável (`Id`) e ciclo de vida.
+- O **Aggregate Root** é o único ponto de entrada para mutar o agregado; protege invariantes.
+- Referencie outros agregados por **id**, nunca por objeto direto.
+- Mantenha agregados pequenos; consistência forte só dentro do agregado.
+
+## Domain Events
+- Emitidos pelo aggregate quando algo relevante de negócio acontece.
+- Nomeados no passado: `OrderPlaced`, `UserRegistered`.
+- Processados por handlers na camada de aplicação/infra (nunca no domínio).
+
+## Repositórios
+- Interface (port) na `application`; implementação na `infrastructure`.
+- Operam sobre **aggregate roots**, não sobre tabelas.
+- Sem vazar detalhes de persistência para fora.
+
+## Erros de domínio
+- Classes específicas (`InsufficientBalanceError`), não `Error` genérico nem string.
+- Use um tipo `Result<T, E>` para fluxos esperados; exceções só para o inesperado.
+
+## Linguagem ubíqua
+- Nomes de classes/métodos refletem o vocabulário do negócio do bounded context.

@@ -1,0 +1,43 @@
+---
+description: Regras de Clean Architecture - camadas e direção das dependências
+globs: package/**/src/contexts/**/*.ts
+alwaysApply: false
+---
+
+# Clean Architecture — Camadas e Dependências
+
+A dependência sempre aponta para dentro. Frameworks ficam na borda.
+
+```
+presentation ─▶ application ─▶ domain ◀─ infrastructure
+```
+
+## Regras por camada
+
+- `domain/`: entidades, value objects, aggregates, domain events, erros de domínio.
+  - PROIBIDO importar de `application`, `infrastructure`, `presentation` ou de qualquer framework/ORM/HTTP.
+  - Sem I/O. Lógica pura e determinística.
+- `application/`: use cases e *ports* (interfaces de repositório/serviços) + DTOs.
+  - Importa apenas de `domain` e de `shared`.
+  - Depende de abstrações (ports), nunca de implementações concretas.
+- `infrastructure/`: implementa os ports (repositórios, ORM, clients HTTP, mensageria).
+  - Única camada que conhece detalhes técnicos externos.
+- `presentation/`: controllers/rotas; converte entrada/saída e invoca use cases.
+
+## Inversão de dependência (exemplo)
+
+```typescript
+// application/ports/user-repository.ts  (a interface vive na aplicação)
+export interface UserRepository {
+  findById(id: UserId): Promise<User | null>;
+  save(user: User): Promise<void>;
+}
+
+// infrastructure/persistence/prisma-user-repository.ts  (implementação na infra)
+export class PrismaUserRepository implements UserRepository { /* ... */ }
+```
+
+## Anti-padrões a recusar
+- Importar entidade/VO dentro de um controller pulando o use case.
+- Use case retornando entidade ORM ou tipo de framework.
+- `domain` importando `zod`, `prisma`, `express`, etc.

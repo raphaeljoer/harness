@@ -1,0 +1,37 @@
+---
+description: Regras de arquitetura front-end — organização por features e fronteiras de UI
+globs: package/**/src/features/**/*.{ts,tsx},package/**/src/app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Arquitetura Front-end
+
+Pacotes front-end em `package/<nome>/` organizam código por **features**, não por camadas de domínio.
+
+## Estrutura
+
+```
+src/
+  app/                  # rotas, layouts, providers globais
+  features/<feature>/   # slice vertical por funcionalidade
+    components/
+    hooks/
+    api/
+    types/
+  shared/               # ui kit, hooks genéricos, utils
+```
+
+## Regras
+
+- **Sem domínio rico no client**: invariantes e regras de negócio ficam no back-end.
+- **api/** é a borda: única camada que faz HTTP; componentes consomem hooks que chamam api/.
+- **features** não importam de outras features diretamente; compartilhe via `shared/` ou props/callbacks.
+- **shared/** não importa de `features/`.
+- Tipos em `types/` espelham contratos da API; não reimplemente validação de negócio.
+
+## Anti-padrões a recusar
+
+- Fetch/axios dentro de componentes de apresentação.
+- Lógica de autorização ou cálculo de negócio no front (delegue ao back-end).
+- Import cruzado entre features (`features/billing` → `features/auth`).
+- Estado global para dados que pertencem a uma única feature.

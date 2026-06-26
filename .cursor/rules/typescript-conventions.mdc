@@ -1,0 +1,37 @@
+---
+description: Convenções de TypeScript do projeto
+globs: **/*.ts
+alwaysApply: false
+---
+
+# Convenções TypeScript
+
+## Tipagem
+- `strict: true`. Proibido `any` (use `unknown` + narrowing quando necessário).
+- Modele estados impossíveis como inexpressáveis (discriminated unions em vez de flags soltas).
+- Prefira `type`/`interface` explícitos em fronteiras públicas (use cases, ports).
+
+## Erros e Result
+- Para fluxos de negócio esperados, retorne `Result<T, E>` em vez de lançar.
+
+```typescript
+// ❌ EVITE
+async function pay() { try { /* ... */ } catch (e) {} }
+
+// ✅ PREFIRA
+async function pay(): Promise<Result<Receipt, PaymentError>> {
+  const charge = await gateway.charge(...);
+  if (!charge.ok) return err(new PaymentError(charge.reason));
+  return ok(Receipt.from(charge.value));
+}
+```
+
+## Estilo
+- Named exports (evite `export default`).
+- Imutabilidade por padrão: `readonly`, evite mutação de parâmetros.
+- Funções pequenas e coesas; um conceito por arquivo.
+- Sem comentários que apenas narram o código; comente intenção/trade-off não óbvio.
+
+## Imports
+- Não importe frameworks/ORM em `domain` ou `application`.
+- Use caminhos consistentes (paths/alias do `tsconfig`) em vez de `../../../`.
