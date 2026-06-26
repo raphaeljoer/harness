@@ -9,20 +9,22 @@ alwaysApply: false
 A dependência sempre aponta para dentro. Frameworks ficam na borda.
 
 ```
-presentation ─▶ application ─▶ domain ◀─ infrastructure
+infra ─▶ application ─▶ domain
 ```
+
+Três camadas: `domain`, `application` e `infra`. Sem camada `presentation` separada.
 
 ## Regras por camada
 
 - `domain/`: entidades, value objects, aggregates, domain events, erros de domínio.
-  - PROIBIDO importar de `application`, `infrastructure`, `presentation` ou de qualquer framework/ORM/HTTP.
+  - PROIBIDO importar de `application`, `infra` ou de qualquer framework/ORM/HTTP.
   - Sem I/O. Lógica pura e determinística.
 - `application/`: use cases e *ports* (interfaces de repositório/serviços) + DTOs.
   - Importa apenas de `domain` e de `shared`.
   - Depende de abstrações (ports), nunca de implementações concretas.
-- `infrastructure/`: implementa os ports (repositórios, ORM, clients HTTP, mensageria).
+- `infra/`: borda técnica — implementa ports (repositórios, ORM, mensageria), controllers/rotas HTTP, ACLs e adapters externos.
   - Única camada que conhece detalhes técnicos externos.
-- `presentation/`: controllers/rotas; converte entrada/saída e invoca use cases.
+  - Controllers convertem entrada/saída e invocam use cases; não acessam repos concretos diretamente.
 
 ## Inversão de dependência (exemplo)
 
@@ -33,7 +35,7 @@ export interface UserRepository {
   save(user: User): Promise<void>;
 }
 
-// infrastructure/persistence/prisma-user-repository.ts  (implementação na infra)
+// infra/persistence/prisma-user-repository.ts  (implementação na infra)
 export class PrismaUserRepository implements UserRepository { /* ... */ }
 ```
 

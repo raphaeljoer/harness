@@ -31,7 +31,7 @@ export class Email {
 - Processados por handlers na camada de aplicação/infra (nunca no domínio).
 
 ## Repositórios
-- Interface (port) na `application`; implementação na `infrastructure`.
+- Interface (port) na `application`; implementação na `infra`.
 - Operam sobre **aggregate roots**, não sobre tabelas.
 - Sem vazar detalhes de persistência para fora.
 

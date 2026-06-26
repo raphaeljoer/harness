@@ -14,7 +14,7 @@ alwaysApply: false
 - **Shared Kernel**: pequeno núcleo compartilhado (`src/shared/`) — mantenha mínimo.
 - **Customer/Supplier** e **Conformist**: deixe explícito quem depende de quem.
 - **Anti-Corruption Layer (ACL)**: ao integrar com contexto/sistema externo, traduza o
-  modelo externo para o seu na borda (`infrastructure`), nunca deixe vazar para dentro.
+  modelo externo para o seu na borda (`infra/`), nunca deixe vazar para dentro.
 
 ## Comunicação entre contextos
 - Prefira eventos de domínio / mensagens assíncronas a chamadas diretas acopladas.

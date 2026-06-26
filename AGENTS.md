@@ -37,14 +37,15 @@ package/<pacote>/src/
   contexts/<bounded-context>/
     domain/
     application/
-    infrastructure/
-    presentation/
+    infra/
   shared/
 ```
 
 ```
-presentation ─▶ application ─▶ domain ◀─ infrastructure
+infra ─▶ application ─▶ domain
 ```
+
+Três camadas back-end: `domain`, `application` e `infra` (controllers/HTTP ficam em `infra/`).
 
 ## Arquitetura front-end (por features)
 

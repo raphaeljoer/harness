@@ -27,15 +27,15 @@ package/<pacote>/src/contexts/<contexto>/
     ports/
     use-cases/
     dtos/
-  infrastructure/
+  infra/
     persistence/
-  presentation/
     http/
 ```
 
 ## Regras ao gerar
 - `domain` e `application` NÃO importam framework/ORM/HTTP.
-- Repositório: interface em `application/ports`, implementação em `infrastructure/persistence`.
+- Repositório: interface em `application/ports`, implementação em `infra/persistence`.
+- Controllers/rotas HTTP em `infra/http/`; invocam use cases, não repos concretos.
 - Use `Result<T, E>` para fluxos de negócio; erros de domínio como classes.
 - Para cada use case, crie esqueleto de teste em `*.spec.ts`.
 

@@ -62,12 +62,11 @@ package/<pacote>/
     contexts/<bounded-context>/
       domain/
       application/
-      infrastructure/
-      presentation/
+      infra/
     shared/
 ```
 
-Dependências: `presentation → application → domain ← infrastructure`
+Dependências: `infra → application → domain` (três camadas; sem `presentation`).
 
 ## Estrutura interna — front-end
 
